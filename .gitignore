@@ -1,0 +1,14 @@
+# .NET build output
+bin/
+obj/
+
+# Локальные временные/тестовые папки
+_smoke/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/

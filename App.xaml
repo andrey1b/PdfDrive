@@ -1,0 +1,70 @@
+﻿<Application x:Class="PdfDrive.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Startup="App_Startup">
+    <Application.Resources>
+
+        <!-- ── Цветовая палитра (начальные значения тёмной темы; ThemeService перезапишет) ── -->
+        <SolidColorBrush x:Key="AccentBrush"        Color="#6C63FF" />
+        <SolidColorBrush x:Key="AccentHoverBrush"   Color="#5A52D5" />
+        <SolidColorBrush x:Key="DangerBrush"        Color="#E74C3C" />
+        <SolidColorBrush x:Key="BgDarkBrush"        Color="#1A1A2E" />
+        <SolidColorBrush x:Key="BgCardBrush"        Color="#16213E" />
+        <SolidColorBrush x:Key="BgInputBrush"       Color="#0F3460" />
+        <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#EAEAEA" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A0A0B8" />
+        <SolidColorBrush x:Key="SeparatorBrush"     Color="#00FFFFFF" />
+        <SolidColorBrush x:Key="CardBorderBrush"    Color="#00FFFFFF" />
+        <SolidColorBrush x:Key="HeaderBgBrush"      Color="#1A1A2E" />
+        <SolidColorBrush x:Key="HeaderTextBrush"    Color="#EAEAEA" />
+        <SolidColorBrush x:Key="HeaderSubBrush"     Color="#A0A0B8" />
+
+        <!-- ── Закруглённая кнопка ── -->
+        <Style x:Key="RoundButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="16,9" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Маленькая (icon) кнопка -->
+        <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource RoundButton}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="MinWidth" Value="38" />
+        </Style>
+
+        <!-- Текстовая (вторичная) кнопка -->
+        <Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="10,6" />
+        </Style>
+
+    </Application.Resources>
+</Application>
