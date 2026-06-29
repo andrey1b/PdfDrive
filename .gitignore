@@ -4,6 +4,7 @@ obj/
 
 # Локальные временные/тестовые папки
 _smoke/
+dist_setup/
 
 # Visual Studio
 .vs/
