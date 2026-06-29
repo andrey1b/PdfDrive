@@ -1,5 +1,5 @@
 #define MyAppName "PDF Drive"
-#define MyAppVersion "1.0.3"
+#define MyAppVersion "1.0.4"
 #define MyAppPublisher "andrey1b"
 #define MyAppURL "https://github.com/andrey1b/PdfDrive"
 #define MyAppExeName "PdfDrive.exe"
@@ -17,6 +17,7 @@ AppUpdatesURL={#MyAppURL}/releases
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+SetupIconFile=app.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=dist_setup
 OutputBaseFilename=PdfDrive_Setup_v{#MyAppVersion}

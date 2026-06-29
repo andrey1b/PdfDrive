@@ -26,6 +26,15 @@ public partial class App : Application
 
     private void App_Startup(object sender, StartupEventArgs e)
     {
+        // Dev-режим генерации иконки: PDFDRIVE_MAKE_ICON=<путь к .ico>
+        var iconPath = Environment.GetEnvironmentVariable("PDFDRIVE_MAKE_ICON");
+        if (!string.IsNullOrEmpty(iconPath))
+        {
+            try { IconGenerator.Generate(iconPath!); Console.WriteLine($"[icon] created {iconPath}"); }
+            finally { Shutdown(0); }
+            return;
+        }
+
         // Smoke-режим для CI/ручной проверки движка объединения:
         //   PDFDRIVE_SMOKE_DIR=<папка> — создаёт 2 тестовых PDF, объединяет, печатает число страниц.
         var smokeDir = Environment.GetEnvironmentVariable("PDFDRIVE_SMOKE_DIR");
