@@ -12,6 +12,7 @@ public class AppSettings
 {
     public string Lang  { get; set; } = Loc.FallbackLang;
     public string Theme { get; set; } = ThemeService.Dark;
+    public bool OpenAfterSave { get; set; } = true;
 
     private static string DataDir =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PdfDrive");

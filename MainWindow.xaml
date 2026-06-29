@@ -47,11 +47,25 @@
         </Border>
 
         <!-- ═══ Панель действий ═══ -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <Button x:Name="AddBtn" Style="{StaticResource RoundButton}" Click="AddBtn_Click" />
-            <Button x:Name="ClearBtn" Style="{StaticResource GhostButton}"
-                    Margin="8,0,0,0" Click="ClearBtn_Click" />
-        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button x:Name="AddBtn" Style="{StaticResource RoundButton}" Click="AddBtn_Click" />
+                <Button x:Name="ClearBtn" Style="{StaticResource GhostButton}"
+                        Margin="8,0,0,0" Click="ClearBtn_Click" />
+            </StackPanel>
+
+            <CheckBox x:Name="OpenAfterSaveChk" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Foreground="{DynamicResource TextSecondaryBrush}"
+                      FontSize="13"
+                      Checked="OpenAfterSaveChk_Changed"
+                      Unchecked="OpenAfterSaveChk_Changed" />
+        </Grid>
 
         <!-- ═══ Список файлов ═══ -->
         <Border Grid.Row="2" Background="{DynamicResource BgCardBrush}"
@@ -129,10 +143,11 @@
             </Grid>
         </Border>
 
-        <!-- ═══ Низ: статус + сохранить ═══ -->
+        <!-- ═══ Низ: статус + предпросмотр + сохранить ═══ -->
         <Grid Grid.Row="3" Margin="0,12,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -141,7 +156,11 @@
                        Foreground="{DynamicResource TextSecondaryBrush}"
                        FontSize="13" TextTrimming="CharacterEllipsis" Margin="4,0,12,0" />
 
-            <Button x:Name="SaveBtn" Grid.Column="1"
+            <Button x:Name="PreviewBtn" Grid.Column="1"
+                    Style="{StaticResource GhostButton}"
+                    Margin="0,0,8,0" Click="PreviewBtn_Click" />
+
+            <Button x:Name="SaveBtn" Grid.Column="2"
                     Style="{StaticResource RoundButton}" Click="SaveBtn_Click" />
         </Grid>
     </Grid>

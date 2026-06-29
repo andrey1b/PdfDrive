@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -14,6 +15,7 @@ public partial class MainWindow : Window
 {
     private readonly AppSettings _settings;
     private readonly ObservableCollection<PdfFileItem> _files = new();
+    private bool _initialized;
 
     public MainWindow(AppSettings settings)
     {
@@ -22,6 +24,9 @@ public partial class MainWindow : Window
 
         FilesList.ItemsSource = _files;
         _files.CollectionChanged += (_, _) => UpdateUiState();
+
+        OpenAfterSaveChk.IsChecked = _settings.OpenAfterSave;
+        _initialized = true;
 
         // Список языков
         foreach (var kv in Loc.SupportedLangs)
@@ -44,6 +49,8 @@ public partial class MainWindow : Window
         AddBtn.Content   = Loc.T("btn.add");
         ClearBtn.Content = Loc.T("btn.clear");
         SaveBtn.Content  = Loc.T("btn.save");
+        PreviewBtn.Content = Loc.T("btn.preview");
+        OpenAfterSaveChk.Content = Loc.T("chk.openafter");
         EmptyHint.Text   = Loc.T("list.empty");
         UpdateThemeButton();
         UpdateUiState();
@@ -56,6 +63,7 @@ public partial class MainWindow : Window
     {
         EmptyHint.Visibility = _files.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         SaveBtn.IsEnabled = _files.Count >= 1;
+        PreviewBtn.IsEnabled = _files.Count >= 1;
         ClearBtn.IsEnabled = _files.Count > 0;
         if (_files.Count > 0)
             StatusLabel.Text = Loc.T("status.ready", ("n", _files.Count));
@@ -160,6 +168,41 @@ public partial class MainWindow : Window
             AddFiles(paths);
     }
 
+    // ──────────────────────────────────────────────────────────── «открыть после сохранения»
+    private void OpenAfterSaveChk_Changed(object sender, RoutedEventArgs e)
+    {
+        if (!_initialized) return;
+        _settings.OpenAfterSave = OpenAfterSaveChk.IsChecked == true;
+        _settings.Save();
+    }
+
+    // ──────────────────────────────────────────────────────────── предпросмотр
+    private void PreviewBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (_files.Count < 1)
+        {
+            StatusLabel.Text = Loc.T("status.empty");
+            return;
+        }
+
+        try
+        {
+            StatusLabel.Text = Loc.T("status.preview");
+            // Собираем во временный файл и открываем во внешней программе просмотра PDF.
+            string tmp = Path.Combine(Path.GetTempPath(),
+                "PdfDrive_preview_" + Guid.NewGuid().ToString("N") + ".pdf");
+            PdfMerger.Build(_files.ToList(), tmp);
+            OpenFile(tmp);
+            StatusLabel.Text = Loc.T("status.previewdone");
+        }
+        catch (Exception ex)
+        {
+            StatusLabel.Text = Loc.T("status.error", ("msg", ex.Message));
+            MessageBox.Show(this, ex.Message, Loc.T("app.title"),
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     // ──────────────────────────────────────────────────────────── сохранение
     private void SaveBtn_Click(object sender, RoutedEventArgs e)
     {
@@ -185,10 +228,8 @@ public partial class MainWindow : Window
             PdfMerger.Build(_files.ToList(), dlg.FileName);
             StatusLabel.Text = Loc.T("status.done", ("path", Path.GetFileName(dlg.FileName)));
 
-            // Предложить открыть готовый файл
-            var ask = MessageBox.Show(this,
-                Loc.T("status.done", ("path", dlg.FileName)),
-                Loc.T("app.title"), MessageBoxButton.OK, MessageBoxImage.Information);
+            if (_settings.OpenAfterSave)
+                OpenFile(dlg.FileName);
         }
         catch (Exception ex)
         {
@@ -196,5 +237,11 @@ public partial class MainWindow : Window
             MessageBox.Show(this, ex.Message, Loc.T("app.title"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    /// <summary>Открывает файл в программе по умолчанию (системный просмотрщик PDF).</summary>
+    private static void OpenFile(string path)
+    {
+        Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
     }
 }

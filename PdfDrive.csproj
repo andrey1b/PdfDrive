@@ -9,9 +9,9 @@
     <RootNamespace>PdfDrive</RootNamespace>
     <AssemblyName>PdfDrive</AssemblyName>
     <AssemblyTitle>PDF Drive</AssemblyTitle>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.3</Version>
     <Description>PDF Drive — сборка PDF, изображений, текста и Word (DOCX) в один PDF</Description>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
