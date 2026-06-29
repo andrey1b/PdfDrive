@@ -21,6 +21,9 @@ public static class FileTypes
     // Текстовые форматы (рендерятся как простой текст).
     public static readonly string[] TextExt = { ".txt", ".log", ".md" };
 
+    // Документы Word (только .docx — OpenXML).
+    public static readonly string[] DocxExt = { ".docx" };
+
     public static bool IsPdf(string path) =>
         PdfExt.Contains(Path.GetExtension(path).ToLowerInvariant());
 
@@ -30,6 +33,9 @@ public static class FileTypes
     public static bool IsText(string path) =>
         TextExt.Contains(Path.GetExtension(path).ToLowerInvariant());
 
+    public static bool IsDocx(string path) =>
+        DocxExt.Contains(Path.GetExtension(path).ToLowerInvariant());
+
     public static bool IsSupported(string path) => Detect(path) != null;
 
     /// <summary>Определить тип файла; null — если формат не поддерживается.</summary>
@@ -38,6 +44,7 @@ public static class FileTypes
         if (IsPdf(path)) return FileKind.Pdf;
         if (IsImage(path)) return FileKind.Image;
         if (IsText(path)) return FileKind.Text;
+        if (IsDocx(path)) return FileKind.Docx;
         return null;
     }
 
@@ -46,14 +53,16 @@ public static class FileTypes
     {
         get
         {
-            string all  = string.Join(";", PdfExt.Concat(ImageExt).Concat(TextExt).Select(e => "*" + e));
+            string all  = string.Join(";", PdfExt.Concat(ImageExt).Concat(TextExt).Concat(DocxExt).Select(e => "*" + e));
             string imgs = string.Join(";", ImageExt.Select(e => "*" + e));
             string txts = string.Join(";", TextExt.Select(e => "*" + e));
+            string docs = string.Join(";", DocxExt.Select(e => "*" + e));
             return
                 $"{Loc.T("filter.supported")}|{all}|" +
                 $"{Loc.T("filter.pdf")}|*.pdf|" +
                 $"{Loc.T("filter.images")}|{imgs}|" +
                 $"{Loc.T("filter.text")}|{txts}|" +
+                $"{Loc.T("filter.docx")}|{docs}|" +
                 $"{Loc.T("filter.all")}|*.*";
         }
     }

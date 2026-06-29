@@ -54,21 +54,25 @@ public partial class App : Application
         string txt = Path.Combine(dir, "note.txt");
         string outPdf = Path.Combine(dir, "merged.pdf");
 
+        string docx = Path.Combine(dir, "report.docx");
+
         MakeSamplePdf(a, "Документ A", pages: 2);
         MakeSamplePng(img, "Скан анализа");
         File.WriteAllText(txt, "Заметка врача.\nДавление в норме. Кириллица: ёжик, тест.\n", System.Text.Encoding.UTF8);
+        MakeSampleDocx(docx);
 
         var items = new[]
         {
             new PdfFileItem(a, FileKind.Pdf),
             new PdfFileItem(img, FileKind.Image),
             new PdfFileItem(txt, FileKind.Text),
+            new PdfFileItem(docx, FileKind.Docx),
         };
         PdfMerger.Build(items, outPdf);
 
         bool ok = File.Exists(outPdf) && new FileInfo(outPdf).Length > 0;
-        int? pages = PdfMerger.TryCountPages(outPdf);  // ожидаем 4: 2 (pdf) + 1 (png) + 1 (txt)
-        Console.WriteLine($"[smoke] merged exists={ok} size={new FileInfo(outPdf).Length} pages={pages?.ToString() ?? "?"} (expect 4) -> {outPdf}");
+        int? pages = PdfMerger.TryCountPages(outPdf);  // ожидаем >=5: 2(pdf)+1(png)+1(txt)+>=1(docx)
+        Console.WriteLine($"[smoke] merged exists={ok} size={new FileInfo(outPdf).Length} pages={pages?.ToString() ?? "?"} (expect >=5) -> {outPdf}");
     }
 
     /// <summary>Рисует простой PNG средствами WPF (для smoke-теста конвертации изображений).</summary>
@@ -91,6 +95,37 @@ public partial class App : Application
         encoder.Frames.Add(BitmapFrame.Create(rtb));
         using var fs = File.Create(path);
         encoder.Save(fs);
+    }
+
+    /// <summary>Создаёт простой .docx (заголовок + абзац + таблица 2×2) для smoke-теста.</summary>
+    private static void MakeSampleDocx(string path)
+    {
+        using var doc = DocumentFormat.OpenXml.Packaging.WordprocessingDocument.Create(
+            path, DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
+        var main = doc.AddMainDocumentPart();
+
+        var heading = new DocumentFormat.OpenXml.Wordprocessing.Paragraph(
+            new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties(
+                new DocumentFormat.OpenXml.Wordprocessing.ParagraphStyleId { Val = "Heading1" }),
+            new DocumentFormat.OpenXml.Wordprocessing.Run(
+                new DocumentFormat.OpenXml.Wordprocessing.Text("Результаты обследования")));
+
+        var para = new DocumentFormat.OpenXml.Wordprocessing.Paragraph(
+            new DocumentFormat.OpenXml.Wordprocessing.Run(
+                new DocumentFormat.OpenXml.Wordprocessing.Text("Пациент здоров. Кириллица работает корректно.")));
+
+        DocumentFormat.OpenXml.Wordprocessing.TableCell Cell(string s) =>
+            new(new DocumentFormat.OpenXml.Wordprocessing.Paragraph(
+                new DocumentFormat.OpenXml.Wordprocessing.Run(
+                    new DocumentFormat.OpenXml.Wordprocessing.Text(s))));
+
+        var table = new DocumentFormat.OpenXml.Wordprocessing.Table(
+            new DocumentFormat.OpenXml.Wordprocessing.TableRow(Cell("Показатель"), Cell("Значение")),
+            new DocumentFormat.OpenXml.Wordprocessing.TableRow(Cell("Давление"), Cell("120/80")));
+
+        main.Document = new DocumentFormat.OpenXml.Wordprocessing.Document(
+            new DocumentFormat.OpenXml.Wordprocessing.Body(heading, para, table));
+        main.Document.Save();
     }
 
     private static void MakeSamplePdf(string path, string title, int pages)

@@ -11,6 +11,7 @@ public enum FileKind
     Pdf,
     Image,
     Text,
+    Docx,
 }
 
 /// <summary>
@@ -27,6 +28,7 @@ public class PdfFileItem : INotifyPropertyChanged
     {
         FileKind.Image => "🖼",
         FileKind.Text  => "📝",
+        FileKind.Docx  => "📘",
         _              => "📄",
     };
 

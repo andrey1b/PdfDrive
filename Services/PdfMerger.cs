@@ -37,18 +37,22 @@ public static class PdfMerger
             var parts = new List<string>(items.Count);
             foreach (var it in items)
             {
-                if (it.Kind == FileKind.Image || it.Kind == FileKind.Text)
+                if (it.Kind == FileKind.Pdf)
                 {
-                    string tmp = Path.Combine(Path.GetTempPath(),
-                        "pdfdrive_" + Guid.NewGuid().ToString("N") + ".pdf");
-                    if (it.Kind == FileKind.Image) ImageToPdf(it.FullPath, tmp);
-                    else                            TextToPdf(it.FullPath, tmp);
-                    tempFiles.Add(tmp);
-                    parts.Add(tmp);
+                    parts.Add(it.FullPath);
                 }
                 else
                 {
-                    parts.Add(it.FullPath);
+                    string tmp = Path.Combine(Path.GetTempPath(),
+                        "pdfdrive_" + Guid.NewGuid().ToString("N") + ".pdf");
+                    switch (it.Kind)
+                    {
+                        case FileKind.Image: ImageToPdf(it.FullPath, tmp); break;
+                        case FileKind.Text:  TextToPdf(it.FullPath, tmp); break;
+                        case FileKind.Docx:  DocxConverter.DocxToPdf(it.FullPath, tmp); break;
+                    }
+                    tempFiles.Add(tmp);
+                    parts.Add(tmp);
                 }
             }
 
