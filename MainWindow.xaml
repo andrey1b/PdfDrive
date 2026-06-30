@@ -37,6 +37,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="AskAiBtn" Style="{StaticResource GhostButton}"
+                            Foreground="{DynamicResource HeaderTextBrush}"
+                            Margin="0,0,8,0" Click="AskAiBtn_Click" />
                     <ComboBox x:Name="LangCombo" Width="120" Margin="0,0,8,0"
                               SelectionChanged="LangCombo_SelectionChanged"
                               VerticalContentAlignment="Center" />

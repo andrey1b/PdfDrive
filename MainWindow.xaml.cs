@@ -52,11 +52,18 @@ public partial class MainWindow : Window
         PreviewBtn.Content = Loc.T("btn.preview");
         OpenAfterSaveChk.Content = Loc.T("chk.openafter");
         EmptyHint.Text   = Loc.T("list.empty");
+        AskAiBtn.Content = Loc.T("ai.button");
         UpdateThemeButton();
         UpdateUiState();
     }
 
     private void UpdateThemeButton() => ThemeBtn.Content = Loc.T("btn.theme");
+
+    private void AskAiBtn_Click(object sender, RoutedEventArgs e)
+    {
+        var w = new Views.AskAiWindow { Owner = this };
+        w.Show();
+    }
 
     // ──────────────────────────────────────────────────────────── состояние UI
     private void UpdateUiState()

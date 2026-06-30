@@ -1,5 +1,5 @@
 #define MyAppName "PDF Drive"
-#define MyAppVersion "1.0.4"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "andrey1b"
 #define MyAppURL "https://github.com/andrey1b/PdfDrive"
 #define MyAppExeName "PdfDrive.exe"
